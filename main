@@ -1,8 +1,10 @@
 lui $8, 0xFA19
 ori $8, $8, 0xE366
 addi  $9, $0, 1  #Sets register 9 to 1 to begin with
-addi $23, $0, 0x2000
+addi $23, $0, 0x2020 #Sets the register to the first spot in memory we will use to store C
+addi $22, $0, 101 #Used to compare with $9 so the program knows when to stop 
 
+hashing:
 multu $9, $8
 mfhi $20
 mflo $21
@@ -38,4 +40,8 @@ sll $14, $15, 24 # $14 is C[7:0]
 srl $14, $14, 24 # The contents of $14 are then moved back to their original place
 xor $15, $13, $14 # $15 is now the final version of C
 
+sb $15, 0($23) #Stores the value of C into the appropriate spot in memory
+addi $23, $23, 4 #Increments the memory address by 4
+addi  $9, $9, 1 #Increments A by 1
 
+bne $9, $22, hashing
