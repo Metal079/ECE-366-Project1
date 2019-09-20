@@ -1,0 +1,41 @@
+lui $8, 0xFA19
+ori $8, $8, 0xE366
+addi  $9, $0, 1  #Sets register 9 to 1 to begin with
+addi $23, $0, 0x2000
+
+multu $9, $8
+mfhi $20
+mflo $21
+xor $10, $20, $21 # A1
+
+multu $10, $8
+mfhi $20
+mflo $21
+xor $10, $20, $21 # A2
+
+multu $10, $8
+mfhi $20
+mflo $21
+xor $10, $20, $21 # A3
+
+multu $10, $8
+mfhi $20
+mflo $21
+xor $10, $20, $21 # A4
+
+multu $10, $8
+mfhi $20
+mflo $21
+xor $10, $20, $21   #A5 is in $10 now
+
+srl $11, $10, 16 # $11 is A5[31:16]
+sll $12, $10, 16 # $12 is A5[15:0]
+srl $12, $12, 16 # $12 is A5[15:0]
+xor $15, $11, $12 #C = A5[31:16] XOR A5[15:0], $15 is C
+
+srl $13, $15, 8 # $13 is C[15:8] 
+sll $14, $15, 24 # $14 is C[7:0] 
+srl $14, $14, 24 # The contents of $14 are then moved back to their original place
+xor $15, $13, $14 # $15 is now the final version of C
+
+
