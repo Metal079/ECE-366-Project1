@@ -4,6 +4,7 @@ addi  $9, $0, 1  #Sets register 9 to 1 to begin with
 addi $23, $0, 0x2020 #Sets the register to the first spot in memory we will use to store C
 addi $22, $0, 101 #Used to compare with $9 so the program knows when to stop 
 
+#PART A
 hashing:
 multu $9, $8
 mfhi $20
@@ -44,4 +45,29 @@ sb $15, 0($23) #Stores the value of C into the appropriate spot in memory
 addi $23, $23, 4 #Increments the memory address by 4
 addi  $9, $9, 1 #Increments A by 1
 
-bne $9, $22, hashing
+bne $9, $22, hashing #Repeats the hashing loop until we perform it 100 times.
+
+
+#PART B
+addi  $9, $0, 1  #Resets $9 back to 1
+addi $23, $0, 0x2020 #Resets the memory location back to 0x2020
+
+storing_max:
+lbu $16, 0($23) #Loads address A value to $16
+add $19, $0, $23 #Stores address A location to $19
+sb $16, 0x2000($0) #Stores the current highest value for C at address 0x2000
+sw $19, 0x2004($0) #Stores the address of the current highest value for C at address 0x2004
+
+next_address:
+addi $23, $23, 4 #Increments the memory address by 4
+addi  $9, $9, 1 #Increments A by 1
+
+lbu $17, 0($23) #Loads Address B value to $17
+slt $10, $17, $16 #Compares address B value to address A value
+
+addi  $9, $9, 1  #Increments counter by 1
+beq $9, $22, exit #If the counter reaches 100 we will skip to exit:
+beq $10, $0, storing_max #If address B value is greater than address A value then we will store its value and address by going back to label storing_max
+j next_address #Else go to next_address which will change the next address and then again compare to A
+
+exit:
