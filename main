@@ -61,9 +61,33 @@ sw $19, 0x2004($0) #Stores the address of the current highest value for C at add
 next_address:
 addi $23, $23, 4 #Increments the memory address by 4
 addi  $9, $9, 1 #Increments A by 1
-
 lbu $17, 0($23) #Loads Address B value to $17
-slt $10, $17, $16 #Compares address B value to address A value
+
+
+ones_check:
+addi $14, $0, 5 #Used to tell counter when to stop
+addi $13, $0, 9 #Used to tell counter when to stop
+addi $12, $12, 1 #Counter
+
+andi $10, $20, 1 #Checks if LSB is 1
+srl $20, $20, 1 #shifts $10 to the right so we may check the next bit with andi
+
+beq $10, $0, reset_count
+addi $15, $15, 1
+beq $15, $14, match
+
+bne $12, $13, ones_check #if $12 != $13 loop
+j compare
+
+reset_count:
+addi $15, $0, 0
+j ones_check
+
+match:
+addi $18, $18, 1
+
+compare:
+sltu $10, $17, $16 #Compares address B value to address A value
 
 addi  $9, $9, 1  #Increments counter by 1
 beq $9, $22, exit #If the counter reaches 100 we will skip to exit:
